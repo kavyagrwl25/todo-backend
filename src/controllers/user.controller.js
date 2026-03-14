@@ -32,7 +32,7 @@ const registerUser = asyncHandler(async (req, res) => {
     })
 
     if (userExists) {
-        throw new ApiError(409, "User with email or displayName already exists");
+        throw new ApiError(409, "User with email or Username already exists");
     }
 
     const user = await User.create({
@@ -50,4 +50,41 @@ const registerUser = asyncHandler(async (req, res) => {
     return res.status(201).json(new ApiResponse(201, createdUser, "User created successfully"));
 })
 
-export { registerUser }
+
+const loginUser = asyncHandler(async (req, res) => {
+    // need user username and password
+    // will find user through email in database and get its password
+    // comparision with hash passowrd
+    // if matches generate an access token and refresh token
+
+    const { displayName, userPassword } = req.body;
+
+    const validUser = await User.findOne({displayName});
+    if(!validUser){
+        throw new ApiError(401, "User does not exist!!");   
+    }
+    const passwordMatch = await validUser.isPasswordCorrect(userPassword);
+    if(!passwordMatch){
+        throw new ApiError(401, "Invalid credentials");
+    }
+
+    validUser.lastLoginAt = new Date();
+    const accessToken = validUser.generateAccessToken();    
+    const refreshToken = validUser.generateRefreshToken();
+    validUser.refreshToken = refreshToken;
+    await validUser.save();
+    
+    return res.status(200).json(new ApiResponse(200, {
+        accessToken,
+        refreshToken,
+        user: {
+            _id: validUser._id,
+            email: validUser.email,
+            displayName: validUser.displayName
+        }
+    }))
+    
+    
+})
+
+export { registerUser, loginUser }

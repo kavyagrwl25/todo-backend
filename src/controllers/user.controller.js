@@ -19,8 +19,10 @@ const registerUser = asyncHandler(async (req, res) => {
         throw new ApiError(400, "All fields are required");
     }
 
-    if (!email.includes("@")) {
-    throw new ApiError(400, "Invalid email format");
+    const emailRegex = /^\S+@\S+\.\S+$/;
+
+    if(!emailRegex.test(email)){
+        throw new ApiError(400,"Invalid email format")
     }
 
     if (userPassword.length < 6) {

@@ -7,7 +7,7 @@ import jwt from "jsonwebtoken";
 
 // Helper function to generate access and refresh tokens
 
-const generateAccessAndRefreshTokens = async (userId) => {
+const generateAccessAndRefreshTokens = async (userId) => {          // bhai ye function baar baar use hoga to generate tokens, isliye isse alag se ek helper function bana diya hai, jisse hum login aur refresh token dono jagah use kar sakte hain. is function me userId pass karna hoga, jisse hum user ko identify kar sake aur uske liye tokens generate kar sake. 
     try {
         const user = await User.findById(userId);
         const accessToken = user.generateAccessToken();
@@ -31,8 +31,7 @@ const registerUser = asyncHandler(async (req, res) => {
     // create user in database
     // send response to frontend
 
-    const {displayName, email, userPassword} = req.body;
-    
+    const {displayName, email, userPassword} = req.body;  
     if(!displayName?.trim() || !email?.trim() || !userPassword?.trim()){
         throw new ApiError(400, "All fields are required");
     }

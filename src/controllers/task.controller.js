@@ -1,4 +1,4 @@
-import asyncHandler from "../utils/asyncHandler.js";
+import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { ApiError } from "../utils/ApiError.js";
 import { Task } from "../models/task.model.js";
@@ -55,9 +55,26 @@ const createTask = asyncHandler(async (req, res) => {
 // delete task
 
 const deleteTask = asyncHandler(async (req, res) => {
-    // 
+    // get task ID from URL parameters (req.params  or req.query)
     // verify token
-    // 
-})
+    // search for the task in the database using the task ID and user ID from the token
+    // if task not found, send 404 response
+    // if task found, delete the task from the database
+    // send response to frontend
 
-export { createTask };
+    const { taskId } = req.params;
+    if (!taskId?.trim()) {
+        throw new ApiError(400, "Task ID is required");
+    }
+    
+    const deletedTask = await Task.findOneAndDelete({ _id: taskId, user: req.user._id })
+    .populate("user", "displayName email");
+
+    if (!deletedTask) {
+        throw new ApiError(404, "Task not found");
+    }
+
+    return res.status(200).json(new ApiResponse(200, deletedTask, "Task deleted successfully"));
+});
+
+export { createTask, deleteTask };

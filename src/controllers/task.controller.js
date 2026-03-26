@@ -32,7 +32,7 @@ const createTask = asyncHandler(async (req, res) => {
         throw new ApiError(400, "Invalid due date");
     }
 
-    const existingTask = await Task.findOne({ title, user: req.user._id });
+    const existingTask = await Task.findOne({ title, userId: req.user._id });
     if (existingTask) {
         throw new ApiError(409, "Task with the same title already exists");
     }
@@ -45,10 +45,12 @@ const createTask = asyncHandler(async (req, res) => {
         user: req.user._id
     });
 
-    const populatedTask = await Task.findById(task._id).populate("user", "displayName email");  //populate is a mongoose method to populate the user field with the displayName and email of the user who created the task
+    const populatedTask = await Task.findById(task._id).populate("user", "displayName email") //populate is a mongoose method to populate the user field with the displayName and email of the user who created the task
 
 
-    return res.status(201).json(new ApiResponse(201, populatedTask, "Task created successfully"));
+    return res
+    .status(201)
+    .json(new ApiResponse(201, populatedTask, "Task created successfully"))
 });
 
 
@@ -73,6 +75,25 @@ const updateTask = asyncHandler(async (req, res) => {
     if(!isValidPriority(priority)){
         throw new ApiError(400, "Invalid priority value");
    }
+    const updatedTask = await Task.findOneAndUpdate( { _id : taskId, userId: req.user._id },//both cond needs to be true, (query obj) 
+        {
+            $set : {
+                title : title, 
+                description : description, 
+                priority : priority
+            }
+        }, {
+            new : true,
+            runValidators: true
+        }
+    )
+    if (!updatedTask) {
+        throw new ApiError(404, "Task not found")
+    }
+    return res
+    .status(200)
+    .json(new ApiResponse(200, updatedTask, "Task Updated Successfully"))
+
 })
 
 // delete task
@@ -90,25 +111,26 @@ const deleteTask = asyncHandler(async (req, res) => {
         throw new ApiError(400, "Task ID is required");
     }
     
-    const deletedTask = await Task.findOneAndDelete({ _id: taskId, user: req.user._id })
+    const deletedTask = await Task.findOneAndDelete({ _id: taskId, userId: req.user._id })
     .populate("user", "displayName email");
 
     if (!deletedTask) {
         throw new ApiError(404, "Task not found");
     }
 
-    return res.status(200).json(new ApiResponse(200, deletedTask, "Task deleted successfully"));
+    return res
+    .status(200)
+    .json(new ApiResponse(200, deletedTask, "Task deleted successfully"))
 });
 
 
 
-
-export { createTask, deleteTask };
+export { createTask, updateTask, deleteTask };
 
 
 
 // createTask       :done
-// updateTask      
+// updateTask       :done
 // deleteTask       :done
 // getAllTasks
 // getTaskById

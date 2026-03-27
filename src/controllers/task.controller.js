@@ -124,6 +124,21 @@ const deleteTask = asyncHandler(async (req, res) => {
 });
 
 
+// To show each task on the dashboard
+const getAllTasks = asyncHandler(async(req, res) => {
+    // 1. get logged-in user from req.user
+    // 2. find all tasks whose user matches req.user._id
+    // 3. use find method in db, it will return all documents related to task model with each field
+    // 3. store all returned task documents in a variable
+    // 4. return them in response
+    const userId = req.user._id    // or const { _id : userId } = req.user    (here we are destructuring it from req.user object)
+    const tasks = await Task.find({ userId }).sort({ createdAt: -1 })   // for latest tasks should display first
+    return res
+    .status(200)
+    .json(new ApiResponse(200, tasks, "Tasks fetched successfully"))
+})
+
+
 
 export { createTask, updateTask, deleteTask };
 

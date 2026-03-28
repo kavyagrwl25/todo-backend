@@ -139,12 +139,53 @@ const getAllTasks = asyncHandler(async(req, res) => {
 })
 
 
-export { createTask, updateTask, deleteTask, getAllTasks };
+// its work is to display one task when user clicks on specific task
+const getTaskById = asyncHandler(async(req, res) => {
+    const { taskId } = req.params
+    const task = await Task.findById(taskId);
+    if(!task){
+        throw new ApiError(404, "No task Found")
+    }
+    return res
+    .status(200)
+    .json(new ApiResponse(200, task, "Task fetched successfully"))
+})
 
 
-// createTask       :done
-// updateTask       :done
-// deleteTask       :done
-// getAllTasks
-// getTaskById
-// toggleTaskCompletion
+// it will toggle the completion thing, that will change isCompleted field in db
+const updateTaskCompletion = asyncHandler(async(req, res) => {
+    const { taskId } = req.params
+    const {isCompleted} = req.body
+    if (typeof isCompleted !== "boolean") {
+        throw new ApiError(400, "isCompleted must be a boolean value");
+    }
+    const setComplete = await Task.findOneAndUpdate({ _id : taskId, userId : req.user._id }, 
+        {
+            $set: {isCompleted : isCompleted}          
+        },
+            {
+            new : true
+    })
+    if(!setComplete){
+        throw new ApiError(404, "Task not found or unauthorized")
+    }
+
+    return res
+    .status(200)
+    .json(new ApiResponse(200, setComplete, "Task completion status updated successfully"))
+})
+
+
+
+
+
+
+export { createTask, updateTask, deleteTask, getAllTasks, getTaskById, updateTaskCompletion };
+
+
+// createTask               :done
+// updateTask               :done
+// deleteTask               :done
+// getAllTasks              :done
+// getTaskById              :done
+// toggleTaskCompletion 

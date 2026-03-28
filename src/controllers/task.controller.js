@@ -19,11 +19,6 @@ const createTask = asyncHandler(async (req, res) => {
     if(!isValidDesc(description)){
         throw new ApiError(400, "Description range is 5 to 300 characters.")
     }
-
-    /* const validPriorities = ["Low", "Medium", "High"];
-    if (priority && !validPriorities.includes(priority)) {
-        throw new ApiError(400, "Invalid priority value");
-    } */
    if(!isValidPriority(priority)){
         throw new ApiError(400, "Invalid priority value");
    }
@@ -57,8 +52,8 @@ const createTask = asyncHandler(async (req, res) => {
 // similarly, we will implement the other controllers for getting all tasks, updating a task and deleting a task. we will also use asyncHandler to handle any errors that may occur during the execution of these controllers and send appropriate responses back to the client.
 
 
-//update task
 
+//update task
     // 1. get title, description, priority from from req.body && get task from req.param
     // 2. validate each entity
     // 3. use findByIdAndUpdate and update the entities in the particular user
@@ -97,7 +92,6 @@ const updateTask = asyncHandler(async (req, res) => {
 
 
 // delete task
-
 const deleteTask = asyncHandler(async (req, res) => {
     // get task ID from URL parameters (req.params  or req.query)
     // verify token
@@ -188,4 +182,4 @@ export { createTask, updateTask, deleteTask, getAllTasks, getTaskById, updateTas
 // deleteTask               :done
 // getAllTasks              :done
 // getTaskById              :done
-// toggleTaskCompletion 
+// toggleTaskCompletion     :done

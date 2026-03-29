@@ -37,10 +37,10 @@ const createTask = asyncHandler(async (req, res) => {
         description,
         priority,
         dueDate,
-        user: req.user._id
+        userId: req.user._id
     });
 
-    const populatedTask = await Task.findById(task._id).populate("user", "displayName email") //populate is a mongoose method to populate the user field with the displayName and email of the user who created the task
+    const populatedTask = await Task.findById(task._id).populate("userId", "displayName email") //populate is a mongoose method to populate the user field with the displayName and email of the user who created the task
 
 
     return res
@@ -101,12 +101,11 @@ const deleteTask = asyncHandler(async (req, res) => {
     // send response to frontend
 
     const { taskId } = req.params;
-    if (!taskId?.trim()) {
+    if (!taskId) {
         throw new ApiError(400, "Task ID is required");
     }
     
     const deletedTask = await Task.findOneAndDelete({ _id: taskId, userId: req.user._id })
-    .populate("user", "displayName email");
 
     if (!deletedTask) {
         throw new ApiError(404, "Task not found");
@@ -114,7 +113,7 @@ const deleteTask = asyncHandler(async (req, res) => {
 
     return res
     .status(200)
-    .json(new ApiResponse(200, deletedTask, "Task deleted successfully"))
+    .json(new ApiResponse(200, null, "Task deleted successfully"))
 });
 
 

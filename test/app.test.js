@@ -25,4 +25,7 @@ describe("isValidTitle", () => {
   test("returns true for max allowed length", () => {
     expect(isValidTitle("a".repeat(50))).toBe(true);
   });
+  test("returns true for valid title with surrounding spaces", () => {
+  expect(isValidTitle("   Go to gym!   ")).toBe(true);
+  });
 });

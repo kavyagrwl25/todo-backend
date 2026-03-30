@@ -106,7 +106,7 @@ This project demonstrates core backend concepts including **authentication, CRUD
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/your-username/todo-backend.git
+git clone https://github.com/kavyagrwl25/todo-backend.git
 cd todo-backend
 ```
 

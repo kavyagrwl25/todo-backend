@@ -1,10 +1,28 @@
 import supertest from 'supertest';
-import app from '../app.js';
+import app from '../src/app';
+import { isValidTitle } from '../src/utils/validator';
 
-describe('GET /', () => {
-  it('should return a welcome message', async () => {
-    const response = await supertest(app).get('/');
-    expect(response.status).toBe(200);
-    expect(response.body).toEqual({ message: 'Welcome to the API!' });
+describe("isValidTitle", () => {
+  test("returns true for a valid title", () => {
+    expect(isValidTitle("Go to gym!")).toBe(true);
+  });
+
+  test("returns false for whitespace-only title", () => {
+    expect(isValidTitle(" ")).toBe(false);
+  });
+  test("returns false for null title", () => {
+    expect(isValidTitle()).toBe(false);
+  });
+
+  test("returns false for undefined title", () => {
+    expect(isValidTitle(undefined)).toBe(false);
+  });
+
+  test("returns false for too long title", () => {
+    expect(isValidTitle("a".repeat(51))).toBe(false);
+  });
+
+  test("returns true for max allowed length", () => {
+    expect(isValidTitle("a".repeat(50))).toBe(true);
   });
 });

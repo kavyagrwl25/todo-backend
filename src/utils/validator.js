@@ -4,7 +4,7 @@ export const isValidEmail = (email) => {
 }
 
 export const isValidTitle = (title) => {
-    if (!title) return false;                  
+    if (!title?.trim()) return false;                  
     const trimmed = title.trim();
     if (trimmed.length > 50) return false; 
     return true;

@@ -22,4 +22,16 @@ app.use("/api/v1/users", userRouter)
 import taskRouter from "./routes/task.routes.js"
 app.use("/api/v1/tasks", taskRouter)
 
+app.use((err, req, res, next) => {
+    const statusCode = err.statusCode || 500;
+
+    return res.status(statusCode).json({
+        success: false,
+        message: err.message || "Internal Server Error",
+        errors: err.errors || [],
+        data: null,
+        ...(process.env.NODE_ENV === "development" && { stack: err.stack })
+    });
+});
+
 export { app }

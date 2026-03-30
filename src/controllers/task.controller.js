@@ -135,7 +135,7 @@ const getAllTasks = asyncHandler(async(req, res) => {
 // its work is to display one task when user clicks on specific task
 const getTaskById = asyncHandler(async(req, res) => {
     const { taskId } = req.params
-    const task = await Task.findById(taskId);
+    const task = await Task.findOne({ _id : taskId, userId : req.user._id });
     if(!task){
         throw new ApiError(404, "No task Found")
     }

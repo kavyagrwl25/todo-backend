@@ -1,19 +1,24 @@
 export const isValidEmail = (email) => {
+    if(typeof email !== "string") return false;
     const emailRegex = /^\S+@\S+\.\S+$/;
     return emailRegex.test(email.trim());
 }
 
 export const isValidTitle = (title) => {
-    if (!title?.trim()) return false;                  
+    if (typeof title !== "string") return false;
+
     const trimmed = title.trim();
-    if (trimmed.length > 50) return false; 
-    return true;
+    return trimmed.length > 0 && trimmed.length <= 50;
 };
 
 export const isValidDesc = (description) => {
-    if (!description) return false;                  
+    if (typeof description !== "string") return false;
+
     const trimmed = description.trim();
-    if (trimmed.length < 5 || trimmed.length > 300) return false; 
+
+    if (!trimmed) return false;
+    if (trimmed.length < 5 || trimmed.length > 300) return false;
+
     return true;
 };
 

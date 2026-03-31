@@ -6,19 +6,15 @@ export const isValidEmail = (email) => {
 
 export const isValidTitle = (title) => {
     if (typeof title !== "string") return false;
-
     const trimmed = title.trim();
     return trimmed.length > 0 && trimmed.length <= 50;
 };
 
 export const isValidDesc = (description) => {
     if (typeof description !== "string") return false;
-
     const trimmed = description.trim();
-
     if (!trimmed) return false;
     if (trimmed.length < 5 || trimmed.length > 300) return false;
-
     return true;
 };
 

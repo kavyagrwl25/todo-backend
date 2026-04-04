@@ -27,7 +27,7 @@ const createTask = asyncHandler(async (req, res) => {
         throw new ApiError(400, "Invalid due date");
     }
 
-    const existingTask = await Task.findOne({ title, userId: req.user._id });
+    const existingTask = await Task.findOne({ title, userId: req.user._id }); 
     if (existingTask) {
         throw new ApiError(409, "Task with the same title already exists");
     }
@@ -37,7 +37,7 @@ const createTask = asyncHandler(async (req, res) => {
         description,
         priority,
         dueDate,
-        userId: req.user._id
+        userId: req.user._id      
     });
 
     const populatedTask = await Task.findById(task._id).populate("userId", "displayName email") //populate is a mongoose method to populate the user field with the displayName and email of the user who created the task
